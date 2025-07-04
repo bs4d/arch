@@ -9,3 +9,5 @@ export ROOT_PASSWORD='root'
 
 export USER_NAME='user'
 export USER_PASSWORD='user'
+
+export IAC_REPOSITORY_PATH="$HOME/git/iac"

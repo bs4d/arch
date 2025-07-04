@@ -5,7 +5,7 @@ set -ex
 repo_path="$(dirname $(realpath $0) | rev | cut --fields 2- --delimiter / | rev)"
 
 # load the config file
-source "$repo_path/arch/config.sh"
+source "$repo_path/config.sh"
 
 # restore the config file back to a template
 (cd "$repo_path" && su "$(stat --format '%U' .)" --command 'git restore arch/config.sh')
@@ -78,7 +78,7 @@ pacstrap -K /mnt base linux linux-firmware lvm2 networkmanager dhcpcd doas grub 
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # copy the iac repository to target system
-cp --recursive "$repo_path" /mnt/root/iac
+cp --recursive "$IAC_REPOSITORY_PATH" /mnt/root/iac
 
 # run the provisioning script
-arch-chroot /mnt /bin/bash < "$repo_path/arch/setup.sh"
+arch-chroot /mnt /bin/bash < "$repo_path/setup.sh"
