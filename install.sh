@@ -60,10 +60,10 @@ vgcreate arch /dev/mapper/lvm
 lvcreate --extents 100%FREE arch --name root
 
 # format the root filesystem
-mkfs.ext4 /dev/mapper/arch-root
+mkfs.ext4 /dev/arch/root
 
 # mount it
-mount /dev/mapper/arch-root /mnt
+mount /dev/arch/root /mnt
 
 # wipe lost+found
 rm --recursive --force /mnt/lost+found

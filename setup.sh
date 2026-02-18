@@ -40,17 +40,17 @@ $ROOT_PASSWORD
 EOF
 
 # add disk decryption to initramfs and regenerate it
-sed --in-place --expression='/^[^#]/s/block filesystems/block encrypt lvm2 filesystems/' /etc/mkinitcpio.conf
+sed --in-place --expression='/^[^#]/s/block filesystems/block sd-encrypt lvm2 filesystems/' /etc/mkinitcpio.conf
 mkinitcpio --allpresets
 
 # get the root partition's uuid
-uuid=$(blkid | grep "${DISK}2" | cut --delimiter=' ' --fields=2 | sed 's/"//g')
+uuid=$(blkid | grep "${DISK}2" | cut --delimiter='"' --fields=2)
 
 # set boot timeout to 0
 sed --in-place --expression='/^GRUB_TIMEOUT/s/5/0/' /etc/default/grub
 
 # set boot options
-sed --in-place --expression="/^GRUB_CMDLINE_LINUX_DEFAULT/s/\"\$/ cryptdevice=${uuid}:arch root=\/dev\/mapper\/arch-root lang=pl locale=pl_PL.UTF-8\"/" /etc/default/grub
+sed --in-place --expression="/^GRUB_CMDLINE_LINUX_DEFAULT/s/\"\$/ rd.luks.name=${uuid}=arch root=\/dev\/arch\/root lang=pl locale=pl_PL.UTF-8\"/" /etc/default/grub
 
 # install grub
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
