@@ -2,10 +2,10 @@
 set -ex
 
 # save repository path to a variable
-repo_path="$(dirname $(realpath $0))"
+repo_path="$(dirname "$(realpath "$0")")"
 
 # load the config file
-source "$repo_path/config.sh"
+. "$repo_path/config.sh"
 
 # restore the config file back to a template
 (cd "$repo_path" && su "$(stat --format '%U' .)" --command 'git restore config.sh')
@@ -16,7 +16,7 @@ wipefs --all "$DISK"
 # create partitions:
 # - EFI, 550MB
 # - LVM, rest of the disk
-fdisk "$DISK" << EOF
+fdisk "$DISK" <<EOF
 g
 n
 1
@@ -50,7 +50,7 @@ YES
 EOF
 
 # open it
-cryptsetup luksOpen "${DISK}2" lvm << EOF
+cryptsetup luksOpen "${DISK}2" lvm <<EOF
 $DISK_ENCRYPTION_PASSWORD
 EOF
 
@@ -75,10 +75,10 @@ mount --mkdir "${DISK}1" /mnt/boot
 pacstrap -K /mnt base linux linux-firmware lvm2 networkmanager dhcpcd doas grub efibootmgr intel-ucode man-db man-pages texinfo ansible
 
 # generate the fstab
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >>/mnt/etc/fstab
 
 # copy the ansible repository to target system
 cp --recursive "$ANSIBLE_REPOSITORY_PATH" /mnt/root/ansible
 
 # run the provisioning script
-arch-chroot /mnt /bin/bash < "$repo_path/setup.sh"
+arch-chroot /mnt /bin/bash <"$repo_path/setup.sh"
